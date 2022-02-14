@@ -1,36 +1,47 @@
-const axios = require('axios');
-
-const delay = ms => new Promise(res => setTimeout(res, ms));
+const { validateUsername, getAddress } = require("../utils/helpers");
 
 class workshop_02 {
-    async getAddress(cepNumber) {
-        await delay(3000);
-        const { cep, logradouro, complemento, bairro, localidade, uf } = await axios.get('https://viacep.com.br/ws/' + cepNumber + '/json/').then((res) => res.data);
+    async addUserAddress(firstName = '', lastName = '', cepNumber = '') {
+        const validUsername = validateUsername(firstName, lastName);
 
-        return {
-            cep,
-            logradouro,
-            complemento,
-            bairro,
-            localidade,
-            uf
+        if (validUsername) {
+            try {
+                const address = await getAddress(cepNumber);
+    
+                return {
+                    firstName,
+                    lastName,
+                    username: firstName + " " + lastName,
+                    address: {
+                        ...address
+                    }
+                };   
+            } catch (error) {
+                throw new Error('Unable to get user address')
+            }
         }
+
+        return null;
     }
 
-    async addUserAddress(firstName, lastName, cepNumber) {
+    async addUserAndComapanyAddress(firstName = '', lastName = '', userCep = '', companyCep = '') {
         try {
-            const address = await this.getAddress(cepNumber);
+            const userAddress = await getAddress(userCep);
+            const companyAddress = await getAddress(companyCep);
 
             return {
                 firstName,
                 lastName,
                 username: firstName + " " + lastName,
-                address: {
-                    ...address
+                userAddress: {
+                    ...userAddress
+                },
+                userAddress: {
+                    ...companyAddress
                 }
             };   
         } catch (error) {
-            throw new Error('Unable to get user address')
+            throw new Error('Unable to get user/company address')
         }
     }
 }
