@@ -4,7 +4,7 @@ class workshop_02 {
     async addUserAddress(firstName = '', lastName = '', cepNumber = '') {
         const validUsername = validateUsername(firstName, lastName);
 
-        if (validUsername) {
+        if (validUsername === true) {
             try {
                 const address = await getAddress(cepNumber);
     
@@ -15,9 +15,9 @@ class workshop_02 {
                     address: {
                         ...address
                     }
-                };   
+                };
             } catch (error) {
-                throw new Error('Unable to get user address')
+                throw new Error('Unable to get user address');
             }
         }
 
@@ -36,12 +36,12 @@ class workshop_02 {
                 userAddress: {
                     ...userAddress
                 },
-                userAddress: {
+                companyAddress: {
                     ...companyAddress
                 }
             };   
         } catch (error) {
-            throw new Error('Unable to get user/company address')
+            throw new Error('Unable to get user/company address');
         }
     }
 }
